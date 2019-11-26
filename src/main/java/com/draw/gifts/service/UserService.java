@@ -8,11 +8,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 

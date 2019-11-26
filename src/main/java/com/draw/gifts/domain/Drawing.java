@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.List;
 
-@Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,11 +18,8 @@ public class Drawing {
     @Column(unique = true, nullable = false)
     private Long id;
 
-    @OneToMany(targetEntity = User.class,
-            mappedBy = "drawing", cascade = CascadeType.PERSIST)
     private List<User> usersList;
 
-    @Enumerated(EnumType.STRING)
     private DrawingStatus drawingStatus;
 
     public Drawing(DrawingStatus drawingStatus) {
