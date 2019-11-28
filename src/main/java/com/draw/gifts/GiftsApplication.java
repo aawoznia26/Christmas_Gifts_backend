@@ -1,12 +1,20 @@
 package com.draw.gifts;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.draw.gifts.service.DrawingService;
+import com.draw.gifts.service.UserService;
 
-@SpringBootApplication
+
 public class GiftsApplication {
 
 	public static void main(String[] args) {
-		}
+		UserService userService = new UserService();
+		DrawingService drawingService = new DrawingService(userService);
+
+		DrawingRunner drawingRunner = new DrawingRunner(userService, drawingService);
+		drawingRunner.runDrawing();
+
+
+	}
 
 }
 
