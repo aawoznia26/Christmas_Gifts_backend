@@ -7,6 +7,7 @@ import com.draw.gifts.service.UserService;
 public class GiftsApplication {
 
 	public static void main(String[] args) {
+
 		UserService userService = new UserService();
 		DrawingService drawingService = new DrawingService(userService);
 
@@ -16,6 +17,8 @@ public class GiftsApplication {
 
 	}
 
+
 }
+
 
 
