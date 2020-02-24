@@ -4,15 +4,13 @@ package com.draw.gifts.service;
 import com.draw.gifts.domain.Drawing;
 import com.draw.gifts.domain.User;
 import com.draw.gifts.repository.UserRepository;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
-import org.junit.runner.RunWith;
 
-@RunWith(SpringRunner.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @SpringBootTest
 @Transactional
 public class UserServiceTestSuite {
@@ -38,13 +36,13 @@ public class UserServiceTestSuite {
         Long id = userService.createUser(name, drawing).getId();
 
         //Then
-        Assert.assertEquals(++usersNumber, userRepository.findAll().size());
-        Assert.assertEquals("Karol", userRepository.getOne(id).getName());
+        assertEquals(++usersNumber, userRepository.findAll().size());
+        assertEquals("Karol", userRepository.getOne(id).getName());
 
     }
 
     @Test
-    public void shouldMarkUserAsExcluded(){
+    public void shouldMarkUserAsHasDrawn(){
 
         //Given
         String name = "Karol";
@@ -53,30 +51,29 @@ public class UserServiceTestSuite {
         Long id = savedUser.getId();
 
         //When
-        userService.markAsExcludedFromDrawing(savedUser);
+        userService.markAsHasDrawn(savedUser);
 
         //Then
-        Assert.assertEquals(true, userRepository.getOne(id).isExcludedFromDrawing());
+        assertEquals(true, userRepository.getOne(id).isIfHasDrawn());
 
     }
 
 
     @Test
-    public void shouldMarkUserAsIncluded() {
+    public void shouldMarkUserAsWasDrawn() {
 
         //Given
         String name = "Karol";
         Drawing drawing = drawingService.openDrawing();
         User savedUser = userService.createUser(name, drawing);
-        savedUser.setExcludedFromDrawing(true);
         User userAfterDataChange = userRepository.save(savedUser);
         Long id = savedUser.getId();
 
         //When
-        userService.unmarkAsExcludedFromDrawing(savedUser);
+        userService.markAsWasDrawn(savedUser);
 
         //Then
-        Assert.assertEquals(false, userRepository.getOne(id).isExcludedFromDrawing());
+        assertEquals(false, userRepository.getOne(id).isIfWasDrawn());
 
     }
     @Test
@@ -94,8 +91,8 @@ public class UserServiceTestSuite {
         userService.saveDrawingResult(drawingUserSaved, drawnUserSaved);
 
         //Then
-        Assert.assertEquals(drawingUserSaved.getId(), userRepository.getOne(drawingUserSaved.getId()).getDrawingUser().getId());
-        Assert.assertEquals(drawnUserSaved.getId(), userRepository.getOne(drawingUserSaved.getId()).getDrawnUser().getId());
+        assertEquals(drawingUserSaved.getId(), userRepository.getOne(drawingUserSaved.getId()).getDrawingUser().getId());
+        assertEquals(drawnUserSaved.getId(), userRepository.getOne(drawingUserSaved.getId()).getDrawnUser().getId());
 
     }
 

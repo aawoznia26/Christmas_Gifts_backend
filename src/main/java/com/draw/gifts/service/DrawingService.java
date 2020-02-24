@@ -56,30 +56,43 @@ public class DrawingService {
 
         LOGGER.info("Preparation to choosing drawing user");
 
-        List<User> usersToChoseFrom = userRepository.findAllByExcludedFromDrawingIsFalseAndDrawing_Id(drawingId);
-        Random generator = new Random();
-        int randomNumber = generator.nextInt(usersToChoseFrom.size());
-        User chosenUser = usersToChoseFrom.get(randomNumber);
-        userService.markAsExcludedFromDrawing(chosenUser);
-        LOGGER.info("User chosen");
+        List<User> usersToChoseFrom = userRepository.findAllByIfHasDrawnIsFalseAndDrawing_Id(drawingId);
+        if (usersToChoseFrom.size()>0) {
+            Random generator = new Random();
+            int randomNumber = generator.nextInt(usersToChoseFrom.size());
+            User chosenUser = usersToChoseFrom.get(randomNumber);
+            userService.markAsHasDrawn(chosenUser);
+            LOGGER.info("User chosen");
 
-        return usersToChoseFrom.get(randomNumber);
+            return usersToChoseFrom.get(randomNumber);
+        } else {
+            closeDrawing(drawingId);
+            User chosenUser = new User();
+            LOGGER.info("No more users to chose");
+            return chosenUser;
+        }
     }
 
-    public User draw(Drawing drawing){
+    public User draw(Long drawingId){
         LOGGER.info("Preparation to drawing");
-        User drawingUser = choseDrawingUser(drawing.getId());
 
-        List<User> usersToChoseFrom = userRepository.findAllByExcludedFromDrawingIsFalseAndDrawing_Id(drawing.getId());
-        Random generator = new Random();
-        int randomNumber = generator.nextInt(usersToChoseFrom.size());
-        User drawnUser = usersToChoseFrom.get(randomNumber);
-        userService.saveDrawingResult(drawingUser, drawnUser);
-        userService.unmarkAsExcludedFromDrawing(drawingUser);
-        userService.markAsExcludedFromDrawing(drawnUser);
-        LOGGER.info("User chosen");
+        List<User> usersToChoseFrom = userRepository.findAllByIfWasDrawnIsFalseAndExcludedTemporarilyIsFalseAndDrawing_Id(drawingId);
+        if (usersToChoseFrom.size()>0) {
+            Random generator = new Random();
+            int randomNumber = generator.nextInt(usersToChoseFrom.size());
+            User drawnUser = usersToChoseFrom.get(randomNumber);
+            User drawingUser = userRepository.findUserByExcludedTemporarilyIsTrueAndDrawing_Id(drawingId);
+            userService.saveDrawingResult(drawingUser, drawnUser);
+            userService.markAsWasDrawn(drawnUser);
+            userService.switchTemporarilyExclusion(drawingUser);
+            LOGGER.info("User chosen");
+            return drawnUser;
+        } else {
+            User drawnUser = new User();
+            LOGGER.info("No more users to draw");
+            return drawnUser;
+        }
 
-        return drawnUser;
 
     }
 }

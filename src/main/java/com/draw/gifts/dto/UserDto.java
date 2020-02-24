@@ -1,11 +1,11 @@
 package com.draw.gifts.dto;
 
 
-import com.draw.gifts.domain.Drawing;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 
 @Getter
 @Setter
@@ -17,11 +17,4 @@ public class UserDto {
 
     private String name;
 
-    private boolean excludedFromDrawing;
-
-    private Drawing drawing;
-
-    public UserDto(String name) {
-        this.name = name;
-    }
 }

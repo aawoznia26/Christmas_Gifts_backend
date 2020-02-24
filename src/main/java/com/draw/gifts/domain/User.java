@@ -1,5 +1,6 @@
 package com.draw.gifts.domain;
 
+import com.draw.gifts.dto.UserDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,9 @@ public class User {
 
     private String name;
 
-    private boolean excludedFromDrawing;
+    private boolean ifHasDrawn;
+    private boolean ifWasDrawn;
+    private boolean excludedTemporarily;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "DRAWING_ID")
@@ -35,23 +38,20 @@ public class User {
     @OneToOne(mappedBy = "drawingUser", cascade = CascadeType.PERSIST)
     private User drawnUser;
 
-    public User(String name, boolean excludedFromDrawing, Drawing drawing) {
+    public User(String name, boolean ifHasDrawn, boolean ifWasDrawn, boolean excludedTemporarily, Drawing drawing) {
         this.name = name;
-        this.excludedFromDrawing = excludedFromDrawing;
+        this.ifHasDrawn = ifHasDrawn;
+        this.ifWasDrawn = ifWasDrawn;
+        this.excludedTemporarily = excludedTemporarily;
         this.drawing = drawing;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", excludedFromDrawing=" + excludedFromDrawing +
-                '}';
+    public void setIfHasDrawn(boolean ifHasDrawn) {
+        this.ifHasDrawn = ifHasDrawn;
     }
 
-    public void setExcludedFromDrawing(boolean excludedFromDrawing) {
-        this.excludedFromDrawing = excludedFromDrawing;
+    public void setIfWasDrawn(boolean ifWasDrawn) {
+        this.ifWasDrawn = ifWasDrawn;
     }
 
     public void setDrawingUser(User drawingUser) {
@@ -60,5 +60,28 @@ public class User {
 
     public void setDrawnUser(User drawnUser) {
         this.drawnUser = drawnUser;
+    }
+
+    public void setExcludedTemporarily(boolean excludedTemporarily) {
+        this.excludedTemporarily = excludedTemporarily;
+    }
+
+    public static UserDto mapToUserDto(final User user) {
+        UserDto userDto = new UserDto(user.id, user.name);
+        return userDto;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", ifHasDrawn=" + ifHasDrawn +
+                ", ifWasDrawn=" + ifWasDrawn +
+                ", excludedTemporarily=" + excludedTemporarily +
+                ", drawing=" + drawing +
+                ", drawingUser=" + drawingUser +
+                ", drawnUser=" + drawnUser +
+                '}';
     }
 }

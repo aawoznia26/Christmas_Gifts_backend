@@ -20,22 +20,23 @@ public class UserService {
     public User createUser(String name, Drawing drawing){
         User savedUser;
         LOGGER.info("Preparation to create user " + name);
-        savedUser = userRepository.save(new User(name, false, drawing));
+        savedUser = userRepository.save(new User(name, false, false, false, drawing));
         LOGGER.info("User created successfully");
         return savedUser;
 
     }
 
-    public User markAsExcludedFromDrawing(User user){
-        LOGGER.info("Preparation to exclusion from drawing of user  " + user);
+    public User markAsHasDrawn(User user){
+        LOGGER.info("Preparation to mark as has drawn  " + user);
         User savedUser = null;
         User userToMark = userRepository.getOne(user.getId());
         if(userToMark != null){
             LOGGER.info("User has been found");
 
-            userToMark.setExcludedFromDrawing(true);
+            userToMark.setIfHasDrawn(true);
+            userToMark.setExcludedTemporarily(true);
             savedUser = userRepository.save(userToMark);
-            LOGGER.info("User marked as excluded from drawing successfully");
+            LOGGER.info("User marked successfully");
         } else {
             LOGGER.error("User not found. Data change impossible");
         }
@@ -44,16 +45,34 @@ public class UserService {
 
     }
 
-    public User unmarkAsExcludedFromDrawing(User user){
-        LOGGER.info("Preparation to inclusion to drawing of user  " + user);
+    public User markAsWasDrawn(User user){
+        LOGGER.info("Preparation to mark user as was drawn  " + user);
         User savedUser = null;
         User userToMark = userRepository.getOne(user.getId());
         if(userToMark != null){
             LOGGER.info("User has been found");
 
-            userToMark.setExcludedFromDrawing(false);
+            userToMark.setIfWasDrawn(true);
             savedUser = userRepository.save(userToMark);
-            LOGGER.info("User marked as included to drawing successfully");
+            LOGGER.info("User marked successfully");
+        } else {
+            LOGGER.error("User not found. Data change impossible");
+        }
+
+        return savedUser;
+
+    }
+
+    public User switchTemporarilyExclusion(User user){
+        LOGGER.info("Preparation to switch temporarily exclusion from drawing " + user);
+        User savedUser = null;
+        User userToMark = userRepository.getOne(user.getId());
+        if(userToMark != null){
+            LOGGER.info("User has been found");
+
+            userToMark.setIfHasDrawn(!userToMark.isExcludedTemporarily());
+            savedUser = userRepository.save(userToMark);
+            LOGGER.info("User marked successfully");
         } else {
             LOGGER.error("User not found. Data change impossible");
         }

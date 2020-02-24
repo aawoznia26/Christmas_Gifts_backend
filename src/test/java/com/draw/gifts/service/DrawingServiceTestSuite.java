@@ -5,15 +5,14 @@ import com.draw.gifts.domain.DrawingStatus;
 import com.draw.gifts.domain.User;
 import com.draw.gifts.repository.DrawingRepository;
 import com.draw.gifts.repository.UserRepository;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-@RunWith(SpringRunner.class)
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 @SpringBootTest
 @Transactional
 public class DrawingServiceTestSuite {
@@ -40,8 +39,8 @@ public class DrawingServiceTestSuite {
        Drawing createdDrawing = drawingService.openDrawing();
 
         //Then
-        Assert.assertEquals(++drawingListSizeBefore, drawingRepository.findAll().size());
-        Assert.assertEquals(DrawingStatus.OPENED, drawingRepository.getOne(createdDrawing.getId()).getDrawingStatus());
+        assertEquals(++drawingListSizeBefore, drawingRepository.findAll().size());
+        assertEquals(DrawingStatus.OPENED, drawingRepository.getOne(createdDrawing.getId()).getDrawingStatus());
 
     }
 
@@ -55,7 +54,7 @@ public class DrawingServiceTestSuite {
         drawingService.closeDrawing(createdDrawing.getId());
 
         //Then
-        Assert.assertEquals(DrawingStatus.FINISHED, drawingRepository.getOne(createdDrawing.getId()).getDrawingStatus());
+        assertEquals(DrawingStatus.FINISHED, drawingRepository.getOne(createdDrawing.getId()).getDrawingStatus());
 
     }
 
@@ -71,7 +70,7 @@ public class DrawingServiceTestSuite {
         User chosenUser = drawingService.choseDrawingUser(createdDrawing.getId());
 
         //Then
-        Assert.assertEquals(true, userRepository.getOne(chosenUser.getId()).isExcludedFromDrawing());
+        assertTrue( userRepository.getOne(chosenUser.getId()).isIfHasDrawn());
 
     }
 
@@ -85,10 +84,10 @@ public class DrawingServiceTestSuite {
         drawingRepository.save(createdDrawing);
 
         //When
-        User drawnUser = drawingService.draw(createdDrawing);
+        User drawnUser = drawingService.draw(createdDrawing.getId());
 
         //Then
-        Assert.assertEquals(true, userRepository.getOne(drawnUser.getId()).isExcludedFromDrawing());
+        assertTrue( userRepository.getOne(drawnUser.getId()).isIfWasDrawn());
 
     }
 

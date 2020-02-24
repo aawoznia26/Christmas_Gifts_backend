@@ -9,6 +9,8 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    List<User> findAllByExcludedFromDrawingIsFalseAndDrawing_Id(Long id);
+    List<User> findAllByIfHasDrawnIsFalseAndDrawing_Id(Long id);
+    List<User> findAllByIfWasDrawnIsFalseAndExcludedTemporarilyIsFalseAndDrawing_Id(Long id);
+    User findUserByExcludedTemporarilyIsTrueAndDrawing_Id(Long id);
 
 }
